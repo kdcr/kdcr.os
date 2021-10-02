@@ -1,28 +1,42 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Desktop/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+import Vue from 'vue';
+import VueI18n from 'vue-i18n';
+import Desktop from './components/layout/Desktop.vue';
 
+Vue.use(VueI18n);
 export default {
   name: 'App',
   components: {
-    HelloWorld,
+    Desktop,
   },
 };
 </script>
 
-<style lang="less">
+<style>
+body {
+  margin: 0;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+
+  --background: #fff;
+  --background-dark: #F4FFF8;
+  --foreground: #2f2f2f;
+  --foreground-light: #2f2f2f;
+  --foreground-dark: #000F08;
+  --accent: #d2f898;
+  --accent-secondary: #50a2a7;
+
+  background-color: var(--background);
+  color: var(--foreground)
 }
+
 </style>
