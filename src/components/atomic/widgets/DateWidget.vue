@@ -2,10 +2,10 @@
   <div class="dateWidgetContainer">
     <span class="currentTime"
     v-on:click="toggleCalendar">
-    {{currentTime}}
+    {{format(currentTime, 'hh:mm')}}
     </span>
     <Calendar
-    v-bind:class="{ calendarDisabled: showCalendar }"
+    v-bind:class="{ calendarDisabled: !showCalendar }"
     class="calendar"/>
   </div>
 </template>
@@ -19,14 +19,20 @@ const showCalendar = false;
 export default {
   name: 'DateWidget',
   props: {},
+  created() {
+    setTimeout(() => {
+      this.currentTime = Date.now();
+    }, 60000);
+  },
   data() {
     return {
-      currentTime: format(Date.now(), 'hh:mm'),
+      currentTime: Date.now(),
       showCalendar,
     };
   },
   methods: {
     toggleCalendar() { this.showCalendar = !this.showCalendar; },
+    format,
   },
   components: {
     Calendar,

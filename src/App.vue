@@ -34,6 +34,9 @@ body {
   --foreground-dark: #000F08;
   --accent: #d2f898;
   --accent-secondary: #50a2a7;
+  --warning: #f37d4b;
+  --error: #e04200;
+  --success: var(--accent);
 
   background-color: var(--background);
   color: var(--foreground)

@@ -17,11 +17,12 @@ export default {
 <style scoped lang="less">
 .topBarContainer {
     width: 100%;
-    height: 1.5rem;
+    height: 25px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    background-color: var(--background);
     opacity: 80%;
 
     & > div {

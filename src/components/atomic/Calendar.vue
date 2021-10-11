@@ -1,8 +1,8 @@
 <template>
   <div class="calendarContainer">
       <div class="periodSelector">
-        <div>{{$t('a')}}</div>
-        <span>{{getMonth(selectedDate)}}</span>
+        <div></div>
+        <span>{{$t('calendar.' + format(selectedDate, 'MMMM').toLowerCase())}}</span>
         <div></div>
       </div>
       <div class="daysGrid">
@@ -10,7 +10,7 @@
         v-for="name in dayNames"
         :key="name"
         >
-          {{name}}
+          {{$t('calendar.dim-' + name)}}
         </span>
       </div>
       <div class="daysGrid">
@@ -28,21 +28,25 @@
 
 <script>
 import {
-  getDate, getMonth, getDaysInMonth, getDay, subMonths,
+  getDate, getMonth, getDaysInMonth, getDay, subMonths, format,
+  lastDayOfMonth,
 } from 'date-fns';
 
 const calcDaysToShow = () => {
   const finalNumbers = [];
   const daysInMonth = getDaysInMonth(Date.now());
   const daysInPrevMonth = getDaysInMonth(subMonths(Date.now(), 1));
+  let lastMonthWeekDay = getDay(lastDayOfMonth(subMonths(Date.now(), 1)));
+  if (lastMonthWeekDay === 0) lastMonthWeekDay = 7;
+  lastMonthWeekDay -= 1;
 
-  for (let index = daysInPrevMonth - (getDay(Date.now()) - 2);
+  for (let index = daysInPrevMonth - lastMonthWeekDay;
     index <= daysInPrevMonth;
     index += 1) {
     finalNumbers.push({ value: index, enabled: false });
   }
 
-  for (let index = 1; index < daysInMonth; index += 1) {
+  for (let index = 1; index <= daysInMonth; index += 1) {
     finalNumbers.push({ value: index, enabled: true });
   }
 
@@ -55,7 +59,7 @@ export default {
     return {
       currentDate: Date.now(),
       selectedDate: Date.now(),
-      dayNames: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
+      dayNames: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
     };
   },
   computed: {
@@ -65,6 +69,7 @@ export default {
   },
   methods: {
     getMonth,
+    format,
   },
 };
 </script>
