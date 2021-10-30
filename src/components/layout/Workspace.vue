@@ -1,17 +1,11 @@
 <template>
   <div class="workspace">
-    <Window
-      :windowName="'kdcr.os'"
-      :isFocused="focusedWindow === 1"
-      :handleFocus="handleFocus"
-      :windowId="1"
-    >
-    </Window>
-    <Window
-      :windowName="'Minesweeper'"
-      :isFocused="focusedWindow === 2"
-      :handleFocus="handleFocus"
-      :windowId="2"
+    <Window v-for="app in apps"
+      :windowTitle="app.title"
+      :isFocused="focusedWindow === app.id"
+      :appId="app.id"
+      :openApplication="app.component"
+      v-bind:key="app.id"
     >
     </Window>
   </div>
@@ -25,15 +19,22 @@ export default {
   components: {
     Window,
   },
+  props: { },
   data() {
     return {
-      focusedWindow: 1,
     };
   },
-  methods: {
-    handleFocus(value) {
-      this.focusedWindow = value;
+  computed: {
+    apps() {
+      return this.$store.getters.apps.filter(
+        (app) => app.open === true,
+      );
     },
+    focusedWindow() {
+      return this.$store.getters.focusedWindow;
+    },
+  },
+  methods: {
   },
 };
 </script>

@@ -1,5 +1,6 @@
 <template>
   <div class="topBarContainer">
+    <span class="focusedWindowTitle">{{focusedWindowTitle}}</span>
     <DateWidget></DateWidget>
   </div>
 </template>
@@ -8,25 +9,23 @@
 import DateWidget from '../atomic/widgets/DateWidget.vue';
 
 export default {
-  components: { DateWidget },
   name: 'TopBar',
+  components: { DateWidget },
+  props: {},
+  computed: {
+    focusedWindowTitle() { return this.$store.getters.focusedWindowTitle; },
+  },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 .topBarContainer {
     width: 100%;
     height: 25px;
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     justify-content: center;
-    background-color: var(--background);
-    opacity: 80%;
-
-    & > div {
-      opacity: 100%;
-    }
+    background: linear-gradient(var(--background), var(--background-transparent));
 }
 </style>

@@ -41,7 +41,6 @@ export default {
 
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 .dateWidgetContainer {
   display: flex;
@@ -55,6 +54,7 @@ export default {
 
 .calendar {
   position: absolute;
+  z-index: 10;
   top: calc(1.5rem + 1rem);
 
   transition: 0.8s all ease-in-out;

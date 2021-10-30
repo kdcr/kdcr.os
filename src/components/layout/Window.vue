@@ -1,22 +1,24 @@
 <template>
   <div
-  v-on:mousedown="handleFocus(windowId)"
+  v-on:mousedown="handleFocus(appId)"
   class="windowContainer"
-  :style="containerStyle"
+  :style="windowStyle"
   ref="window">
     <div class="windowHeader"
       v-on:dblclick="!isWindowMaximized ? maximizeWindow(true) : null"
-      @mousedown="setDragging(true)"
-      @mouseup="setDragging(false)"
+      v-on:mousedown="setDragging(true)"
+      v-on:mouseup="setDragging(false)"
     >
       <div class="actionsContainer">
-        <div></div>
+        <div v-on:click="closeWindow"></div>
         <div></div>
         <div v-on:click="maximizeWindow"></div>
       </div>
-      <span class="windowTitle">{{windowName}}</span>
+      <span class="windowTitle">{{windowTitle}}</span>
     </div>
     <div class="windowBody">
+      <component v-bind:is="openApplication"
+      ></component>
     </div>
   </div>
 </template>
@@ -31,11 +33,11 @@ export default {
     });
   },
   props: {
-    windowName: String,
+    windowTitle: String,
     isFocused: Boolean,
-    handleFocus: Function,
-    windowId: Number,
+    appId: Number,
     parentRef: Object,
+    openApplication: Object,
   },
   data() {
     return {
@@ -50,7 +52,7 @@ export default {
     };
   },
   computed: {
-    containerStyle() {
+    windowStyle() {
       return `
         --posY: ${this.posY}px;
         --posX: ${this.posX}px;
@@ -73,19 +75,38 @@ export default {
           this.posY = mousePos.y - 35;
         }
 
-        if ((this.posY + movementY >= 0 || movementY > 0)
-         && (this.posY + movementY + this.$refs.window.clientHeight
-          <= window.innerHeight)) { this.posY += movementY; }
+        if (movementY < 0) {
+          if (this.posY <= 0) {
+            this.posY = 0;
+          } else {
+            this.posY += movementY;
+          }
+        } else if (this.posY >= window.innerHeight - this.$refs.window.clientHeight - 26) {
+          this.posY = window.innerHeight - this.$refs.window.clientHeight - 26;
+        } else {
+          this.posY += movementY;
+        }
 
-        if ((this.posX + movementX >= 0 || movementX > 0)
-         && (this.posX + movementX + this.$refs.window.clientWidth
-          <= window.innerWidth)) { this.posX += movementX; }
+        if (movementX < 0) {
+          if (this.posX <= 0) {
+            this.posX = 0;
+          } else {
+            this.posX += movementX;
+          }
+        } else if (this.posX >= window.innerWidth - this.$refs.window.clientWidth - 2) {
+          this.posX = window.innerWidth - this.$refs.window.clientWidth - 2;
+        } else {
+          this.posX += movementX;
+        }
       }
     },
     handleMouseOut(buttons) {
       if (buttons !== 1) {
         this.setDragging(false);
       }
+    },
+    handleFocus() {
+      this.$store.commit('focusedWindow', this.appId);
     },
     maximizeWindow() {
       if (this.isWindowMaximized) {
@@ -101,6 +122,9 @@ export default {
       }
       this.isWindowMaximized = !this.isWindowMaximized;
     },
+    closeWindow() {
+      this.$store.commit('closeWindow', this.appId);
+    },
   },
 };
 </script>
@@ -108,17 +132,16 @@ export default {
 <style scoped lang="less">
 .windowContainer {
   position: absolute;
-  border: 1px solid var(--accent-secondary);
   resize: both;
-  overflow: auto;
-
+  overflow: hidden;
   width: var(--windowWidth);
   height: var(--windowHeight);
-
   top: var(--posY);
   left: var(--posX);
   z-index: var(--z-index);
 
+  border: 1px solid var(--accent);
+  border-radius: 10px;
   background-color: var(--background);
   box-shadow: 1px 1px 5px var(--foreground-light);
 }
@@ -129,7 +152,7 @@ export default {
   align-content: center;
   width: 100%;
   height: 1.5rem;
-  border-bottom: 1px solid var(--accent-secondary);
+  border-bottom: 1px solid var(--accent);
   background-color: var(--background);
   color: var(--foreground);
   & > .actionsContainer {
@@ -142,6 +165,7 @@ export default {
       height: 10px;
       width: 10px;
       border-radius: 100%;
+      cursor: pointer;
     }
 
     & > div:nth-child(1) {
@@ -167,6 +191,6 @@ export default {
 
 .windowBody {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 1.5rem);
 }
 </style>

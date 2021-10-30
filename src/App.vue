@@ -12,6 +12,12 @@ import Desktop from './components/layout/Desktop.vue';
 Vue.use(VueI18n);
 export default {
   name: 'App',
+  mounted() {
+    const savedBackground = localStorage.selectedBackground;
+    if (savedBackground) {
+      this.$store.commit('selectedBackground', savedBackground);
+    }
+  },
   components: {
     Desktop,
   },
@@ -28,6 +34,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   --background: #fff;
+  --background-transparent: #ffffff44;
   --background-dark: #F4FFF8;
   --foreground: #2f2f2f;
   --foreground-light: #2f2f2f;
@@ -39,7 +46,10 @@ body {
   --success: var(--accent);
 
   background-color: var(--background);
-  color: var(--foreground)
+  color: var(--foreground);
+
+  overflow: hidden;
+
 }
 
 </style>
